@@ -16,7 +16,7 @@ my_repeats = repeatfinder.get_repeats('cAAAAAAAAAAAAgctatcgatgctgacggcgactgtagct
 
 You can allow for gaps in the repeats by using the keyword `gap`
 ```
-my_gapped_repeats = repeatfinder.get_repeats('cAAAAAAAAAAAAgctatcgatgctgacggcgactgtagctgactAAAAAAAAAAAAt', gap = 1):
+my_gapped_repeats = repeatfinder.get_repeats('cAAAAAAcAAAAAAgctatcgatgctgacggcgactgtagctgactAAAAAAtAAAAAAt', gap = 1):
 ```
 
 To run the example script:
@@ -32,11 +32,5 @@ non gapped repeats
 gapped repeats
 (2, 13, 46, 57)
 (2, 12, 47, 57)
-(3, 13, 46, 56)
-(2, 13, 46, 57)
-(2, 12, 47, 57)
-(2, 13, 46, 57)
-(2, 12, 47, 57)
-(3, 13, 46, 56)
 (3, 13, 46, 56)
 ```
