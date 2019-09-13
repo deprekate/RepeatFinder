@@ -11,12 +11,12 @@ python3 setup.py install
 Import and use the module as normal
 ```
 import repeatfinder
-my_repeats = repeatfinder.get_repeats('cAAAAAAAAAAAAgctatcgatgctgacggcgactgtagctgactAAAAAAAAAAAAt'):
+my_reps = repeatfinder.get_repeats('cAAAAAAAAAAAAgctatcgatgctgacggcgactgtagctgactAAAAAAAAAAAAt'):
 ```
 
 You can allow for gaps in the repeats by using the keyword `gap`
 ```
-my_gapped_repeats = repeatfinder.get_repeats('cAAAAAAcAAAAAAgctatcgatgctgacggcgactgtagctgactAAAAAAtAAAAAAt', gap = 1):
+my_reps = repeatfinder.get_repeats('cAAAAAAcAAAAAAgctatcgatgctgacggcgactgtagctgactAAAAAAtAAAAAAt', gap = 1):
 ```
 
 To run the example script:
