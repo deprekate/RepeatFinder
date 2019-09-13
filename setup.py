@@ -22,6 +22,6 @@ repeatfinder_module = Extension('repeatfinder',
                     sources = ['src/repeatfinder.cpp'])
 
 setup (name = 'repeatfinder',
-       version = '1.0',
-       description = 'A c library for finding repeats in a DNA sequence',
+       version = '1.1',
+       description = 'A package for finding repeats in a DNA sequence',
        ext_modules = [repeatfinder_module])
