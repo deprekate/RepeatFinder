@@ -1,3 +1,27 @@
+/*
+MIT License
+
+Copyright (c) 2019 Sajia Akhter, Katelyn McNair, Rob Edwards
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 #include <Python.h>
 //#include <stdio.h>
 //#include <string.h>
@@ -11,6 +35,9 @@ using namespace std;
 
 #define REPEAT_LEN                    11
 #define HASH_LEN     (1<<(REPEAT_LEN*2))
+#if PY_MAJOR_VERSION >= 3
+#define PY3K
+#endif
 
 unsigned INIT_DNA_LEN = 120000000; 
 
@@ -106,9 +133,9 @@ void find_maxlen_rev(int fst, int sec)
 			k++;
 		else 
 			break;
-	R.fst=fst+1;
-	R.sec=sec*(-1)-1;
-	R.len=REPEAT_LEN + k;
+	R.fst = fst + 1;
+	R.sec = sec * (-1) - 1;
+	R.len = REPEAT_LEN + k;
 	R.seclen = R.len;
 	R.visited = 0;
 	R.exact = 0;
@@ -141,12 +168,15 @@ void extend_repeats()
 
 int check_extend(int fst,int n)
 {
-	int i,j = rep[fst].fst + rep[fst].len -1 +n, len = rep.size(),k, head , tail, mid;
+	int i, j, k;
+        int len = (int)rep.size();
+	int head, tail, mid;
 
 	// binary search
-	head = fst+1;
-	tail = len-1;
-	mid = (head +tail)/2;
+	j = rep[fst].fst + rep[fst].len -1 +n;
+	head = fst + 1;
+	tail = len - 1;
+	mid = (head + tail) / 2;
 	while(rep[mid].fst!= j && head<=tail){
 		mid = (head +tail)/2;
 		if(rep[mid].fst<j)
@@ -172,7 +202,8 @@ int check_extend(int fst,int n)
 	
 void extend_gapped_repeat()
 {
-	int i,j,k, len = rep.size();
+	int i,j,k;
+        int len = (int)rep.size();
 	
 	for(i =0;i<len;i++){
 		if(rep[i].visited==0){
@@ -199,18 +230,16 @@ static PyObject* get_repeats (PyObject* self, PyObject* args, PyObject *kwargs)
 	const Py_ssize_t tuple_length = 4;
 	PyObject *repeat_list = PyList_New(0);
 	int i,j;
-	int totalRep = 0;
         //var is not used, its just a placeholder in case we add an extra feature
 	int var = 1;
 	
-
 	static char *kwlist[] = {(char *)"dna", (char *)"gap", (char *)"var", NULL};
 
 	if (!PyArg_ParseTupleAndKeywords(args, kwargs, "s|ii", kwlist, &dna, &gap_len, &var)) 
 	{
 		return NULL;
 	}
-	dna_len = strlen(dna);
+	dna_len = (int)strlen(dna);
 	//initialize
 	converter[(unsigned char)'A'] = 0;
 	converter[(unsigned char)'a'] = 0;
@@ -238,7 +267,8 @@ static PyObject* get_repeats (PyObject* self, PyObject* args, PyObject *kwargs)
 	if(gap_len>1)
 		extend_gapped_repeat();
 
-	j = rep.size();
+	// create the return list of tuples that will hold the pairs of repeats
+	j = (int)rep.size();
 	for(i=0;i<j;i++){
 		if(rep[i].visited==0 && rep[i].len>= output_rep_len){
 			PyObject *the_tuple = PyTuple_New(tuple_length);
@@ -253,7 +283,6 @@ static PyObject* get_repeats (PyObject* self, PyObject* args, PyObject *kwargs)
 				PyTuple_SET_ITEM(the_tuple, 3, PyLong_FromLong((rep[i].sec+rep[i].seclen-1)*(-1)));
 			}
 			PyList_Append(repeat_list, the_tuple);
-			totalRep++;
 		}
 	}
 
@@ -262,21 +291,27 @@ static PyObject* get_repeats (PyObject* self, PyObject* args, PyObject *kwargs)
 
 // Our Module's Function Definition struct
 // We require this `NULL` to signal the end of our method
-// definition
-static PyMethodDef myMethods[] = {
+static PyMethodDef repeatfinder_methods[] = {
 	{ "get_repeats", (PyCFunction) get_repeats, METH_VARARGS | METH_KEYWORDS, "Finds the repeats in a sequence" },
 	{ NULL, NULL, 0, NULL }
 };
-// Our Module Definition struct
+#ifdef PY3K
+// module definition structure for python3
 static struct PyModuleDef RepeatFinder = {
 	 PyModuleDef_HEAD_INIT,
 	"RepeatFinder",
-	"Test Module",
+	"mod doc",
 	-1,
-	myMethods
+	repeatfinder_methods
 };
-// Initializes our module using our above struct
+// module initializer for python3
 PyMODINIT_FUNC PyInit_repeatfinder(void)
 {
 	return PyModule_Create(&RepeatFinder);
 }
+#else
+// module initializer for python2
+PyMODINIT_FUNC initrepeatfinder() {
+	Py_InitModule3("RepeatFinder", repeatfinder_methods, "mod doc");
+}
+#endif

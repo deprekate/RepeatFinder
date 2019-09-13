@@ -1,6 +1,6 @@
 import repeatfinder
 
-seq = 'cAAAAAAAAAAAAgctatcgatgctgacggcgactgtagctgactAAAAAAAAAAAAt'
+seq = 'cAAAAAAAAAAAAgctascgatgctgacggcgactgtagctgactAAAAAAAAAAAAt'
 
 print("non gapped repeats")
 repeats = repeatfinder.get_repeats(seq)

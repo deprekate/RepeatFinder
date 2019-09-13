@@ -18,7 +18,7 @@ module1 = Extension('repeatfinder',
                     library_dirs = [os.getcwd(),],
                     sources = ['src/repeatfinder.cpp'])
 
-setup (name = 'RepeatFinder',
+setup (name = 'repeatfinder',
        version = '1.0',
-       description = 'The c library for finding repeats',
+       description = 'A c library for finding repeats in a DNA sequence',
        ext_modules = [module1])
