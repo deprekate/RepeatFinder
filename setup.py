@@ -4,6 +4,8 @@ import os
 
 os.environ["CC"] = "g++"
 os.environ["CXX"] = "g++"
+#os.environ["CPP"] = "g++"
+#os.environ["LDSHARED"] = "g++"
 
 
 compile_args = ["-O3"]

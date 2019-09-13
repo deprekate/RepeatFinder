@@ -225,6 +225,7 @@ void extend_gapped_repeat()
 	}
 }
 
+
 static PyObject* get_repeats (PyObject* self, PyObject* args, PyObject *kwargs)
 {
 	const Py_ssize_t tuple_length = 4;
@@ -315,3 +316,30 @@ PyMODINIT_FUNC initrepeatfinder() {
 	Py_InitModule3("RepeatFinder", repeatfinder_methods, "mod doc");
 }
 #endif
+
+int
+main(int argc, char *argv[])
+{
+	wchar_t *program = Py_DecodeLocale(argv[0], NULL);
+	if (program == NULL) {
+		fprintf(stderr, "Fatal error: cannot decode argv[0]\n");
+		exit(1);
+	}
+
+	/* Add a built-in module, before Py_Initialize */
+	PyImport_AppendInittab("repeatfinder", PyInit_repeatfinder);
+
+	/* Pass argv[0] to the Python interpreter */
+	Py_SetProgramName(program);
+
+	/* Initialize the Python interpreter.  Required. */
+	Py_Initialize();
+
+	/* Optionally import the module; alternatively,
+           import can be deferred until the embedded script
+           imports it. */
+	PyImport_ImportModule("repeatfinder");
+
+	PyMem_RawFree(program);
+	return 0;
+}
