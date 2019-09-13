@@ -6,7 +6,7 @@ Get, compile, and then install the module
 git clone
 cd RepeatFinder
 python3 setup.py install
-``
+```
 
 Import and use the module as normal
 ```
@@ -14,7 +14,7 @@ import repeatfinder
 my_repeats = repeatfinder.get_repeats('cAAAAAAAAAAAAgctatcgatgctgacggcgactgtagctgactAAAAAAAAAAAAt'):
 ```
 
-You can allow for gaps in the repeats by using the keyword 'gap'
+You can allow for gaps in the repeats by using the keyword `gap`
 ```
 my_gapped_repeats = repeatfinder.get_repeats('cAAAAAAAAAAAAgctatcgatgctgacggcgactgtagctgactAAAAAAAAAAAAt', gap = 1):
 ```
