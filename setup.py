@@ -7,7 +7,7 @@ os.environ["CXX"] = "g++"
 #os.environ["CPP"] = "g++"
 #os.environ["LDSHARED"] = "g++"
 
-compile_args = ["-O3"]
+compile_args = ["-O3", "-lstdc++"]
 link_args    = ["-lstdc++"]
 
 repeatfinder_module = Extension('repeatfinder',
@@ -25,4 +25,5 @@ repeatfinder_module = Extension('repeatfinder',
 setup (name = 'repeatfinder',
        version = '1.2',
        description = 'A package for finding repeats in a DNA sequence',
+       python_requires='>3.5.2',
        ext_modules = [repeatfinder_module])
