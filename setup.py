@@ -23,7 +23,7 @@ repeatfinder_module = Extension('repeatfinder',
                     sources = ['src/repeatfinder.cpp'])
 
 setup (name = 'repeatfinder',
-       version = '1.2',
+       version = '1.3',
        description = 'A package for finding repeats in a DNA sequence',
        python_requires='>3.5.2',
        ext_modules = [repeatfinder_module])
