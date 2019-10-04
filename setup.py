@@ -7,7 +7,8 @@ os.environ["CXX"] = "g++"
 #os.environ["CPP"] = "g++"
 #os.environ["LDSHARED"] = "g++"
 
-compile_args = ["-O3", "-lstdc++"]
+#compile_args = ["-O3", "-lstdc++"]
+compile_args = ["-O3", "-g"]
 link_args    = ["-lstdc++"]
 
 repeatfinder_module = Extension('repeatfinder',

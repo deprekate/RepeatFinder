@@ -27,10 +27,9 @@ SOFTWARE.
 //#include <string.h>
 //#include <stdlib.h>
 //#include <iostream>
-//#include <string>
+#include <string>
 #include <assert.h>
 #include <vector>
-
 using namespace std;
 
 #define REPEAT_LEN                    11
@@ -41,13 +40,11 @@ using namespace std;
 
 unsigned INIT_DNA_LEN = 120000000; 
 
-char *dna;
-int dna_len;
 int gap_len = 0;
 int converter[128], complement[128];
 int output_rep_len = REPEAT_LEN;
 
-vector<int> allrepeats[HASH_LEN];
+//vector<int> allrepeats[HASH_LEN];
 struct repeat{
 	int fst;
 	int sec;
@@ -55,57 +52,32 @@ struct repeat{
 	int seclen;
 	int visited;
 	int exact;
-}R;
+};
 
+/*
 vector<repeat> rep;
+*/
 
-// find all the 11 length substring and store their start position
-void find_repeats()
+
+void find_maxlen(std::string & dna, repeat &R, vector<repeat> &rep,  int fst, int sec)
 {
-	int key, start, keylen = 2 * (REPEAT_LEN - 1);
-
-	key = 0;
-	for(start = 0;start < REPEAT_LEN; start++){
-		key = (key<<2) + converter[(unsigned char)dna[start]];
-	}
-	allrepeats[key].push_back(0);
-	for(start = 1;start < dna_len-REPEAT_LEN+1; start++)
-	{
-		key = ((key&((1<<keylen)-1))<< 2) + converter[(unsigned char)dna[start+REPEAT_LEN-1]];
-		allrepeats[key].push_back(start);
-	}
-	//find reverse repeat
-	key = 0;
-	for(start = dna_len-1;start > dna_len-1-REPEAT_LEN; start--)
-		key = (key<<2) + converter[complement[(unsigned char)dna[start]]];
-	allrepeats[key].push_back((dna_len-1)*(-1));
-	
-	for(start = dna_len-2;start > REPEAT_LEN-2; start--)
-	{
-		key= ((key&((1<<keylen)-1))<<2) + converter[complement[(unsigned char)dna[start-REPEAT_LEN+1]]];
-		allrepeats[key].push_back(start*(-1));
-	}
-}
-
-void find_maxlen(int fst, int sec)
-{
+	int dna_len;
 	int i,j,k;
 	//  check whether to compute //
 	
+	//dna_len = (int)strlen(dna);
+	dna_len = dna.length();
 	if(sec-fst < REPEAT_LEN)
 		return;
-	
-	if (fst >0)
+	if (fst > 0)
 		if(dna[fst-1] == dna[sec-1])
 			return;
-
 	k=0;
 	for(i = REPEAT_LEN+fst, j = REPEAT_LEN+sec ; i<sec && j<dna_len; i++, j++)
 		if (dna[i] == dna[j])
 			k++;
 		else 
 			break;
-
 	R.fst=fst+1;
 	R.sec=sec+1;
 	R.len=REPEAT_LEN + k;
@@ -115,9 +87,12 @@ void find_maxlen(int fst, int sec)
 	rep.push_back(R);
 }
 
-void find_maxlen_rev(int fst, int sec)
+void find_maxlen_rev(std::string & dna, repeat &R, vector<repeat> &rep, int fst, int sec)
 {
+	int dna_len;
 	int i,j,k;
+
+	dna_len = dna.length();
 	sec = sec *(-1);
 	//  check whether to compute //
 	if(sec-fst +1< 2 * REPEAT_LEN)
@@ -142,31 +117,8 @@ void find_maxlen_rev(int fst, int sec)
 	rep.push_back(R);
 }
 
-void extend_repeats()
-{
-	unsigned long j;
-	int i, key, keylen=2*(REPEAT_LEN-1);
 
-	key = 0;
-	for(i = 0;i < REPEAT_LEN; i++)
-		key = (key<<2) + converter[(unsigned char)dna[i]];
-	for(j=0; j < allrepeats[key].size(); j++){
-		if(allrepeats[key][j]<0)
-			find_maxlen_rev(0,allrepeats[key][j]);
-		else
-			find_maxlen(0,allrepeats[key][j]);
-	}
-	for(i =1;i<dna_len-REPEAT_LEN+1;i++){
-		key = ((key&((1<<keylen)-1))<< 2) + converter[(unsigned char)dna[i+REPEAT_LEN-1]];
-		for(j=0;j<allrepeats[key].size();j++)
-			if(allrepeats[key][j]<0)
-				find_maxlen_rev(i,allrepeats[key][j]);
-			else
-				find_maxlen(i,allrepeats[key][j]);
-	}
-}
-
-int check_extend(int fst,int n)
+int check_extend(vector<repeat> &rep, int fst,int n)
 {
 	int i, j, k;
         int len = (int)rep.size();
@@ -200,7 +152,7 @@ int check_extend(int fst,int n)
 	return -1;
 }
 	
-void extend_gapped_repeat()
+void extend_gapped_repeat(vector<repeat> &rep)
 {
 	int i,j,k;
         int len = (int)rep.size();
@@ -209,7 +161,7 @@ void extend_gapped_repeat()
 		if(rep[i].visited==0){
 			for(j=1;j<=gap_len;j++){
 				
-				k = check_extend(i,j);
+				k = check_extend(rep, i,j);
 				if(k==-1)
 					continue;
 			
@@ -225,9 +177,74 @@ void extend_gapped_repeat()
 	}
 }
 
+//void extend_repeats(std::string & dna, std::vector< std::vector<int> > & allrepeats, repeat &R, vector<repeat> &rep)
+void extend_repeats(std::string & dna, std::vector<int>  (&allrepeats)[HASH_LEN], repeat &R, vector<repeat> &rep)
+{
+	int dna_len;
+	unsigned long j;
+	int i, key, keylen=2*(REPEAT_LEN-1);
+
+	dna_len = dna.length();
+	key = 0;
+	for(i = 0;i < REPEAT_LEN; i++)
+		key = (key<<2) + converter[(unsigned char)dna[i]];
+	for(j = 0; j < allrepeats[key].size(); j++){
+		if(allrepeats[key][j] < 0)
+			find_maxlen_rev(dna, R, rep, 0, allrepeats[key][j]);
+		else
+			find_maxlen(dna, R, rep, 0, allrepeats[key][j]);
+	}
+	for(i = 1; i < dna_len - REPEAT_LEN + 1; i++){
+		key = ((key&((1<<keylen)-1))<< 2) + converter[(unsigned char)dna[i+REPEAT_LEN-1]];
+		for(j = 0; j < allrepeats[key].size(); j++)
+			if(allrepeats[key][j] < 0)
+				find_maxlen_rev(dna, R, rep, i, allrepeats[key][j]);
+			else
+				find_maxlen(dna, R, rep, i, allrepeats[key][j]);
+	}
+}
+
+// find all the 11 length substring and store their start position
+void find_repeats(std::string & dna, std::vector<int> (&allrepeats)[HASH_LEN])
+{
+	int dna_len;
+	int key, start, keylen = 2 * (REPEAT_LEN - 1);
+
+	dna_len = dna.length();
+	key = 0;
+	for(start = 0;start < REPEAT_LEN; start++){
+		key = (key<<2) + converter[(unsigned char)dna[start]];
+	}
+	allrepeats[key].push_back(0);
+	for(start = 1;start < dna_len-REPEAT_LEN+1; start++)
+	{
+		key = ((key&((1<<keylen)-1))<< 2) + converter[(unsigned char)dna[start+REPEAT_LEN-1]];
+		allrepeats[key].push_back(start);
+	}
+	//find reverse repeat
+	key = 0;
+	for(start = dna_len-1;start > dna_len-1-REPEAT_LEN; start--)
+	{
+		key = (key<<2) + converter[complement[(unsigned char)dna[start]]];
+	}
+	allrepeats[key].push_back((dna_len-1)*(-1));
+	
+	for(start = dna_len-2;start > REPEAT_LEN-2; start--)
+	{
+		key = ((key&((1<<keylen)-1))<<2) + converter[complement[(unsigned char)dna[start-REPEAT_LEN+1]]];
+		allrepeats[key].push_back(start*(-1));
+	}
+}
 
 static PyObject* get_repeats (PyObject* self, PyObject* args, PyObject *kwargs)
 {
+	repeat R;
+	std::vector<int> allrepeats[HASH_LEN];
+	//std::vector< std::vector<int> > allrepeats(HASH_LEN);
+	std::vector<repeat> rep;
+
+	//char *dna;
+	std::string dna;
 	const Py_ssize_t tuple_length = 4;
 	PyObject *repeat_list = PyList_New(0);
 	int i,j;
@@ -240,7 +257,6 @@ static PyObject* get_repeats (PyObject* self, PyObject* args, PyObject *kwargs)
 	{
 		return NULL;
 	}
-	dna_len = (int)strlen(dna);
 	//initialize
 	converter[(unsigned char)'A'] = 0;
 	converter[(unsigned char)'a'] = 0;
@@ -259,14 +275,14 @@ static PyObject* get_repeats (PyObject* self, PyObject* args, PyObject *kwargs)
 	complement[(unsigned char)'T'] = 'A';
 	complement[(unsigned char)'t'] = 'a';
 
-	find_repeats();
-
-	extend_repeats();
+	find_repeats(dna, allrepeats);
+	return 1;
+	extend_repeats(dna, allrepeats, R, rep);
 
 	gap_len++;
 
 	if(gap_len>1)
-		extend_gapped_repeat();
+		extend_gapped_repeat(rep);
 
 	// create the return list of tuples that will hold the pairs of repeats
 	j = (int)rep.size();
