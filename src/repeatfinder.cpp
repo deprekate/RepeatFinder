@@ -239,7 +239,7 @@ void find_repeats(std::string & dna, std::vector<int> (&allrepeats)[HASH_LEN])
 static PyObject* get_repeats (PyObject* self, PyObject* args, PyObject *kwargs)
 {
 	repeat R;
-	std::vector<int> allrepeats[HASH_LEN];
+	static std::vector<int> allrepeats[HASH_LEN];
 	//std::vector< std::vector<int> > allrepeats(HASH_LEN);
 	std::vector<repeat> rep;
 
@@ -276,7 +276,7 @@ static PyObject* get_repeats (PyObject* self, PyObject* args, PyObject *kwargs)
 	complement[(unsigned char)'t'] = 'a';
 
 	find_repeats(dna, allrepeats);
-	return 1;
+	return Py_BuildValue("");
 	extend_repeats(dna, allrepeats, R, rep);
 
 	gap_len++;
