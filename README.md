@@ -14,10 +14,13 @@ import repeatfinder as rf
 my_reps = rf.get_repeats('GGGGGGGGGGGGcAAAAAAAAAAAAgctacgatggagctgacGGGGGGGGGGGGtAAAAAAAAAAAAt')
 ```
 
-You can allow for gaps in the repeats by using the keyword `gap`
+You can even allow for gaps in the repeats by using the keyword `gap`
 ```
 my_reps = rf.get_repeats('GGGGGGGGGGGGcAAAAAAAAAAAAgctacgatggagctgacGGGGGGGGGGGGtAAAAAAAAAAAAt', gap = 1)
 ```
+The return values are an iterable list containing four-tuples, where the first and second tuple correspond to the coordinates
+of one of the repeat pairs, and the third and fourth correspond to the other repeat.  The list is sorted with the higher scoring
+repeat pairs coming first.
 
 To run the example script:
 ```
