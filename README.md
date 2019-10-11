@@ -3,7 +3,7 @@ A python package to quickly find repeats in a DNA sequence
 
 Get, compile, and then install the module
 ```
-git clone
+git clone https://github.com/deprekate/RepeatFinder
 cd RepeatFinder
 python3 setup.py install --user
 ```
