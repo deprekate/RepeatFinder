@@ -29,7 +29,7 @@ with open("README.md", "r") as fh:
 
 setup (
     name = 'repeatfinder',
-    version = '1.4',
+    version = '1.5',
     author = "Katelyn McNair",
     author_email = "deprekate@gmail.com",
     description = 'A package for finding repeats in a DNA sequence',
