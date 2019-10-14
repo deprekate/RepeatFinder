@@ -7,7 +7,7 @@ To get, you can either install via `pip` with the command:
 ```
 pip install repeatfinder
 ```
-*or* you can fetch the source, compile, theninstall the module:
+_or_ you can fetch the source, compile, theninstall the module:
 ```
 git clone https://github.com/deprekate/RepeatFinder
 cd RepeatFinder
