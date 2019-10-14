@@ -1,11 +1,12 @@
 # RepeatFinder
 A python package to quickly find repeats in a DNA sequence
 
+
+##  Installing
 To get, you can either install via `pip` with the command:
 ```
 pip install repeatfinder
 ```
-
 or you can feth the source. then compile and install the module:
 ```
 git clone https://github.com/deprekate/RepeatFinder
@@ -13,6 +14,7 @@ cd RepeatFinder
 python3 setup.py install
 ```
 
+## Usage
 Import and use the module as normal
 ```
 import repeatfinder as rf
