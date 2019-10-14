@@ -5,3 +5,7 @@ clean:
 	rm -fr build
 	rm -fr dist
 	rm -fr repeatfinder.egg-info
+
+upload:
+	python3 setup.py sdist bdist_wheel
+	python3 -m twine upload dist/*
