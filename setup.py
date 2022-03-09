@@ -16,7 +16,6 @@ repeatfinder_module = Extension('repeatfinder',
                     extra_compile_args=compile_args,
                     extra_link_args=link_args,
                     include_dirs=[
-                             '.',
                              '...',
                              os.path.join(os.getcwd(), 'include'),
                     ],
@@ -26,6 +25,10 @@ repeatfinder_module = Extension('repeatfinder',
 with open("README.md", "r") as fh:
     long_desc = fh.read()
 
+def get_version():
+    with open("VERSION", 'r') as f:
+        v = f.readline().strip()
+        return v
 
 setup (
     name = 'repeatfinder',
@@ -36,11 +39,13 @@ setup (
     long_description = long_desc,
     long_description_content_type="text/markdown",
     url =  "https://github.com/deprekate/RepeatFinder",
+	scripts=['repeatfinder.py'],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
     python_requires='>3.5.2',
+	install_requires=['genbank'],
     ext_modules = [repeatfinder_module]
 )

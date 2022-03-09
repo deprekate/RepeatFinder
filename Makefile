@@ -1,7 +1,7 @@
 all:
 	python3 setup.py install --user
 clean:
-	pip3 uninstall -y RepeatFinder
+	pip3 uninstall -y repeatfinder
 	rm -fr build
 	rm -fr dist
 	rm -fr repeatfinder.egg-info

@@ -2,6 +2,8 @@
 from signal import signal, SIGPIPE, SIG_DFL
 signal(SIGPIPE,SIG_DFL) 
 import sys
+
+sys.path.pop(0)
 import repeatfinder as rf
 from genbank.file import File
 from genbank.locus import Locus
