@@ -32,7 +32,7 @@ def get_version():
 
 setup (
     name = 'repeatfinder',
-    version = '1.5',
+	version = get_version(),
     author = "Katelyn McNair",
     author_email = "deprekate@gmail.com",
     description = 'A package for finding repeats in a DNA sequence',
